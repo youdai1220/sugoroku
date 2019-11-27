@@ -27,14 +27,8 @@
 
         const paragraph = document.createElement('p');
         paragraph.innerText = 'A'
-        //(String('a'+ a)).appendChild(paragraph)
+        eval(String('a'+a)).appendChild(paragraph)
 
-       
         document.getElementById(String('a'+ a)).style.backgroundColor = 'orange';
     }
-
-
-
-
-      
 })();

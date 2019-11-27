@@ -1,0 +1,24 @@
+body{
+    text-align:center;
+    margin:auto;
+    font-family:'Century Gothic','游ゴシック';
+    width:1250px;
+}
+table{
+    text-align:center;
+    margin:auto;
+    font-family:'Century Gothic','游ゴシック';
+    width:1000px;
+    height:500px;
+}
+button{
+    font-size:100%;
+    font-family:'Century Gothic','游ゴシック';
+    border-style:none;
+    height:30px;
+    width:200px;
+}
+td{
+    width:100px;
+    height:100px;
+}

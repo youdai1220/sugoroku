@@ -1,21 +1,26 @@
 (function(){
     'use strict';
+    const startButton = document.getElementById('start-button');
     const saikoro = document.getElementById('saikoro'); 
+    const NumberArea = document.getElementById('numberarea');
     const turnArea = document.getElementById('turnarea');
-    const resultArea = document.getElementById('result-area');
     document.getElementById('a1').style.backgroundColor = 'skyblue';
     document.getElementById('a50').style.backgroundColor = 'orange';
 
-    var a = 1; //Aの位置
-    var b = 1; //Bの位置
-    var turn = 1; //A・Bのターン
 
+    var a;
+    var b;
+    var aTotal = 1; //Aの位置
+    var bTotal = 1; //Bの位置
+    var turn; //A・Bのターン
+
+    var number = document.createElement('h2'); //NumberAreaの内容
+    var Turn = document.createElement('h4'); //turnAreaの内容
     const paragraph1 = document.createElement('p'); //Startの内容
     const paragraphSame = document.createElement('p'); //AとBが同じマスにいるときの内容
     const paragraphA = document.createElement('p'); //Aがいるマスの内容
     const paragraphB = document.createElement('p'); //Bがいるマスの内容   
     const paragraph50 = document.createElement('p'); //Goalの内容
-    const result = document.createElement('h4'); //resultの内容
 
     function removeAllChildren(element){
         while (element.firstChild){
@@ -26,112 +31,153 @@
     paragraph1.innerText = 'Start \n \n A B';
     a1.appendChild(paragraph1) //スタート時のStartの内容
 
-    const Turn = document.createElement('p');
-    Turn.innerText = 'Aさんのターンです。'
-    turnArea.appendChild(Turn); //最初のターンはAから
+    Turn.innerText = '「ゲームを始める」を押してください。'
+    turnArea.appendChild(Turn); 
+
+    startButton.onclick = () => { //先攻・後攻を決める
+        var x = Math.random(); 
+        var y = Math.random();
+        if(x > y){
+            turn = 1;
+            Turn.innerText = 'Aさんのターンです。'
+        }else if(y > x){
+            turn = 2;
+            Turn.innerText = 'Bさんのターンです。'
+        }
+        turnArea.appendChild(Turn); 
+        document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする
+        document.getElementById('start-button').disabled = true; //リスタートをできないようにする
+    }
+
 
     saikoro.onclick = () =>{ //ボタンを押したときの処理
-
-        function TurnChangeToB(){ //Bのターンに変える処理
-            removeAllChildren(turnArea);
-            Turn.innerText = 'Bさんのターンです。'
-            turnArea.appendChild(Turn);
-        };
-
         if(turn % 2 === 1){ //trueならAさんのターン
-            if(a === 1){ //Aがスタートするときの処理
-                paragraph1.innerText = 'Start \n \n B';
-                a1.appendChild(paragraph1); //Startマスに残る文字列は「Start  B」
 
-            }else if(a > 1 && a < 50){ //Aの二回目以降のターンの処理
-                if(a === b){ //AとBが同じマスにいるときの処理
-                    removeAllChildren(eval('a'+ a));
+            function TurnChangeToB(){ //Bのターンに変える処理
+                removeAllChildren(turnArea);
+                Turn.innerText = 'Bさんのターンです。'
+                turnArea.appendChild(Turn);
+            };
+
+            if(aTotal === 1){ //Aがスタートするときの処理
+                if(aTotal === bTotal){ //Aが先攻のとき
+                    removeAllChildren('a1');
+                    paragraph1.innerText = 'Start \n \n B';
+                    a1.appendChild(paragraph1); //Startの内容は「Start B」
+                }else{ //Aが後攻のとき
+                    removeAllChildren('a1');
+                    paragraph1.innerText = 'Start';
+                    a1.appendChild(paragraph1); //Startの内容は「Start」
+                }
+
+            }else if(aTotal > 1 && aTotal < 50){ //Aの二回目以降のターンの処理
+                if(aTotal === bTotal){ //AとBが同じマスにいるときの処理
+                    removeAllChildren(eval('a'+ aTotal));
                     paragraphSame.innerText = 'B';
-                    eval('a'+ a).appendChild(paragraphSame); //残る文字列は「B」
+                    eval('a'+ aTotal).appendChild(paragraphSame); //残る文字列は「B」
 
                 }else{
-                    removeAllChildren(eval('a'+ a));
-                    document.getElementById(String('a'+ a)).style.backgroundColor = 'white'; //Aがいなくなったマスは元の状態になる
+                    removeAllChildren(eval('a'+ aTotal));
+                    document.getElementById(String('a'+ aTotal)).style.backgroundColor = 'white'; //Aがいなくなったマスは元の状態になる
                 }
 
             }
 
-            a = a + Math.floor(Math.random()*6)+1 //乱数で1~6までが出る
-            if(a >= 50){
-                a = 50;
+            a = Math.floor(Math.random() * 6) + 1 //乱数で1~6までが出る
+            removeAllChildren(NumberArea);
+            number.innerText = a;
+            NumberArea.appendChild(number); //出た目はNUmberAreaに表示する
+            aTotal = aTotal + a;
+
+            if(aTotal >= 50){ //Aがゴールするときの処理
+                aTotal = 50;
                 removeAllChildren(a50);
                 paragraph50.innerText = 'Goal \n \n A' 
                 a50.appendChild(paragraph50) //Goalの内容は「Goal　A」
 
-                result.innerText = 'Aさんが' + (a - b) + 'マス差で勝ちました。おめでとうございます。'
-                resultArea.appendChild(result);
+                function Result(){
+                    const result = 'Aさんが' + (aTotal - bTotal) + 'マス差で勝ちました。おめでとうございます。' //Aが先にゴールした時の表示
+                    alert(result);
+                };
 
-                document.getElementById('saikoro').disabled = true;
+                setTimeout(Result,1)
+                document.getElementById('saikoro').disabled = true; //Aがゴールしたらサイコロは振れなくなる
             }
 
-            else{ //AもBもゴールしていないときの処理
+            else{ //Aがゴールしないときの処理
                 paragraphA.innerText = 'A'
-                eval('a'+ a).appendChild(paragraphA) //Aのいるマスの内容は「A」
-                document.getElementById(String('a'+ a)).style.backgroundColor = 'yellowgreen'; //Aのいるマスは黄緑になる
+                eval('a'+ aTotal).appendChild(paragraphA); //Aのいるマスの内容は「A」
+                document.getElementById(String('a'+ aTotal)).style.backgroundColor = 'yellowgreen'; //Aのいるマスは黄緑になる
             };
 
-            if(b !== 50){
-                turn = turn + 1; //ターンが順番になるようにするための処理
-                TurnChangeToB();
-                return;
-            }else if(b === 50){
-                return;
-            }
+            turn = turn + 1; //ターンが順番になるようにするための処理
+            TurnChangeToB(); //Aのターン終了後Bのターンに変わる
+            return;
+
+
+        //以下、Bのターンについてーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
         }else if(turn % 2 === 0){ //trueならBのターン
 
-            function TurnChangeToA(){ //Bのターンに変える処理
+            function TurnChangeToA(){ //Aのターンに変える処理
                 removeAllChildren(turnArea);
                 Turn.innerText = 'Aさんのターンです。'
                 turnArea.appendChild(Turn);
             };
 
-            if(b === 1){
-                paragraph1.innerText = 'Start';
-                a1.appendChild(paragraph1);
+            if(bTotal === 1){ //Bがスタートするときの処理
+                if(aTotal === bTotal){ //Bが先攻のとき
+                    removeAllChildren('a1');
+                    paragraph1.innerText = 'Start \n \n A';
+                    a1.appendChild(paragraph1); //Startの内容は「Start A」
+                }else{ //Bが後攻のとき
+                    removeAllChildren('a1');
+                    paragraph1.innerText = 'Start';
+                    a1.appendChild(paragraph1); //Startの内容は「Start」
+                }
 
-            }else if(b > 1 && b < 50){
-                if(a === b){ //AとBが同じマスにいるときの処理
-                    removeAllChildren(eval('a'+ b));
+            }else if(bTotal > 1 && bTotal < 50){
+                if(aTotal === bTotal){ //AとBが同じマスにいるときの処理
+                    removeAllChildren(eval('a'+ bTotal));
                     paragraphSame.innerText = 'A';
-                    eval('a'+ b).appendChild(paragraphSame); 
+                    eval('a'+ bTotal).appendChild(paragraphSame); //残る文字列は「A」
 
                 }else{
-                    removeAllChildren(eval('a'+ b));
-                    document.getElementById(String('a'+ b)).style.backgroundColor = 'white';
+                    removeAllChildren(eval('a'+ bTotal));
+                    document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'white'; //Aがいなくなったマスは元の状態になる
                 }
             }
 
-            b = b + Math.floor(Math.random()*6)+1
-            if(b >= 50){
-                b = 50;
+            b = Math.floor(Math.random() * 6) + 1; //乱数で1~6までが出る
+            removeAllChildren(NumberArea);
+            number.innerText = b;
+            NumberArea.appendChild(number); //出た目はNUmberAreaに表示する
+            bTotal = bTotal + b;
+
+            if(bTotal >= 50){
+                bTotal = 50;
                 removeAllChildren(a50);
                 paragraph50.innerText = 'Goal \n \n B' 
                 a50.appendChild(paragraph50) //Goalの内容は「Goal　B」
 
-                result.innerText = 'Bさんが' + (b - a) + 'マス差で勝ちました。おめでとうございます。'
-                resultArea.appendChild(result);
+                function Result(){
+                    const result = 'Bさんが' + (bTotal - aTotal) + 'マス差で勝ちました。おめでとうございます。' //Bが先にゴールした時の表示
+                    alert(result);
+                };
 
-                document.getElementById('saikoro').disabled = true;
-            }else{
-                paragraphB.innerText = 'B'
-                eval(String('a'+ b)).appendChild(paragraphB)
-                document.getElementById(String('a'+ b)).style.backgroundColor = 'pink';
+                setTimeout(Result,1);
+                document.getElementById('saikoro').disabled = true; //Aがゴールしたらサイコロは振れなくなる
+
+            }else{ //Bがゴールしないときの処理
+                paragraphB.innerText = 'B';
+                eval(String('a'+ bTotal)).appendChild(paragraphB); //Bのいるマスの内容は「B」
+                document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'pink'; //Bのいるマスはピンクになる
             };
 
-            if(a !== 50){
-                turn = turn + 1; //ターンが順番になるようにするための処理
-                TurnChangeToA();
-                return;
-            }else if(a === 50){
-                return;
-            }
-
+            turn = turn + 1; //ターンが順番になるようにするための処理
+            TurnChangeToA(); //Bのターン終了後Aのターンに変わる
+            return;
+            
         }
     }
 })();

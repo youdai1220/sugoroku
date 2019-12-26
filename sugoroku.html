@@ -8,9 +8,21 @@
     <link rel="stylesheet" href="sugoroku.css">
 </head>
 <body>
-    <input type="button" id="saikoro" value="サイコロを振る" >
-    <div id="turnarea"></div>
-    <table id="game" rules="all" frame="border" border="3">
+    <h2>すごろく</h2>
+    <br>普通の2人用すごろくです。「ゲームを始める」を押すと先攻・後攻を決定します。
+    <input type="button" id="start-button" value="ゲームを始める">
+    <p><table id="number" rules="all" frame="border">
+        <tr>
+            <td id="n1"><div id="turnarea"></div></td>
+            <td rowspan="2"><div id="numberarea"></div></td>
+        </tr>
+        <tr>
+            <td id="n3"><input type="button" id="saikoro" value="サイコロを振る" disabled="true"></td>
+        </tr>
+    </table>
+
+
+    <P><table id="game" rules="all" frame="border" border="3">
         <tr>
             <td id="a1"></td>
             <td id="a2"></td>

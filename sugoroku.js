@@ -5,15 +5,13 @@
     const NumberArea = document.getElementById('numberarea');
     const turnArea = document.getElementById('turnarea');
 
-    var eventNumber = []; //イベントを発生させるマス
+
     var eventNumberPlus = []; //「〇マス進む」を発生させるマス
     var eventNumberMinus = []; //「〇マス戻る」を発生させるマス
     var eventNumberChange = []; //「チェンジ」を発生させるマス
     var shortcut = []; //進むマス数
     var detour = []; //戻るマス数
-    var eventParagraphPlus = []; //「〇マス進む」の内容(x2 ~ x43)
-    var eventParagraphMinus = []; //「〇マス戻る」の内容(x7 ~ x49)
-    var eventParagraphChange = []; //「チェンジ」の内容(x11 ~ x40)
+    
     var eventCheckAfterPlusA; //Aにおいてイベントの移動後に「〇マス進む」があるか確認する
     var eventCheckAfterMinusA; //Aにおいてイベントの移動後に「〇マス戻る」があるか確認する
     var eventCheckAfterChangeA; //Aにおいてイベントの移動後に「チェンジ」があるか確認する
@@ -57,54 +55,47 @@
         }
         turnArea.appendChild(Turn); //turnAreaにどちらのターンか表示する
 
-        for(var i = 0; i < 12; i++){ //5マスに「〇マス進む」を発生させる
-            var eventNumberPlusRandom = Math.floor(Math.random() * 42) + 2; //乱数を発生させ、イベントを発生させるマスを決める
-            if (eventNumber.indexOf( eventNumberPlusRandom ) >= 0 ){ //eventNumberPlusRandomがすでにeventNumberにある場合はやり直す
-                i = i - 1;
-                continue;
-            }else{
-                eventNumber.push( eventNumberPlusRandom );
-                eventNumberPlus.push( eventNumberPlusRandom ); //乱数を発生させ、適当なマスにイベントを発生させる;
-                shortcut.push( Math.floor(Math.random() * 5) + 2 ); //進むマス数を乱数で決める 
-                eventParagraphPlus.push (document.createElement('div')); 
-                eventParagraphPlus[i].innerText = shortcut[i] + 'マス進む'
-                eval('x'+ eventNumberPlus[i]).appendChild(eventParagraphPlus[i]); //決まったイベントを記述
-                document.getElementById(String('x'+ eventNumberPlus[i])).style.backgroundColor = "rgb(148, 255, 203)";
-            };
-        };
-        for(var q = 0; q < 12; q++){ //5マスに「〇マス戻る」を発生させる
-            var eventNumberMinusRandom = Math.floor(Math.random() * 42) + 8; //乱数を発生させ、イベントを発生させるマスを決める
-            if (eventNumber.indexOf( eventNumberMinusRandom ) >= 0){ //eventNumberMinusRandomがすでにeventNumberにある場合はやり直す
-                q = q - 1;
-                continue;
-            }else{
-                eventNumber.push( eventNumberMinusRandom );
-                eventNumberMinus.push( eventNumberMinusRandom ); //乱数を発生させ、適当なマスにイベントを発生させる
-                detour.push( Math.floor(Math.random() * 5) + 2 ); //戻るマス数を乱数で決める 
-                eventParagraphMinus.push (document.createElement('div')); 
-                eventParagraphMinus[q].innerText = detour[q] + 'マス戻る'
-                eval('x'+ eventNumberMinus[q]).appendChild(eventParagraphMinus[q]); //決まったイベントを記述
-                document.getElementById(String('x'+ eventNumberMinus[q])).style.backgroundColor = "rgb(255, 70, 77)";
-            };
-        };
-        for(var r = 0; r < 12; r++){ //2マスに「チェンジ」を発生させる
-            var eventNumberChangeRandom = Math.floor(Math.random() * 30) + 11;
-            if (eventNumber.indexOf( eventNumberChangeRandom ) >= 0 ){ //eventNumberChangeRandomがすでにeventNumberにある場合はやり直す
-                r = r - 1;
-                continue;
-            }else{
-                eventNumber.push( eventNumberChangeRandom );
-                eventNumberChange.push( eventNumberChangeRandom ); //乱数を発生させ、適当なマスにイベントを発生させる
-                eventParagraphChange.push (document.createElement('div'));
-                eventParagraphChange[r].innerText = 'チェンジ';
-                eval('x'+ eventNumberChange[r]).appendChild(eventParagraphChange[r]); //決まったイベントを記述
-                document.getElementById(String('x'+ eventNumberChange[r])).style.backgroundColor = "rgb(255, 255, 0)"
-            }
-        }
+        var eventNumber = []; //イベントを発生させるマス
+        var eventParagraph = []; //イベントの内容
+        function eventMaking( q, min, max, eventKind){
+            for(var i = 0; i < q; i++){ //6マスに「〇マス進む」を発生させる
+                var eventNumberRandom = Math.floor(Math.random() * (max + 1 - min)) + min; //乱数を発生させ、イベントを発生させるマスを決める
+                if (eventNumber.indexOf( eventNumberRandom ) >= 0 ){ //eventNumberRandomがすでにeventNumberにある場合はやり直す
+                    i = i - 1;
+                    continue;
+                }else{       
+                    eventNumber.push( eventNumberRandom ); //eventNumberにeventNumberRandomを加える
+                    eventParagraph.push(document.createElement('div')); //eventParagraphにイベントを表示するエリアをつくる
 
+                    if(eventKind === 'plus'){
+                        eventNumberPlus.push( eventNumberRandom ); //乱数を発生させ、適当なマスにイベントを発生させる;
+                        shortcut.push( Math.floor(Math.random() * 5) + 2 ); //進むマス数を乱数で決める 
+                        eventParagraph[i].innerText = shortcut[i] + 'マス進む'
+                        eval('x'+ eventNumberPlus[i]).appendChild(eventParagraph[i]); //決まったイベントを記述
+                        document.getElementById(String('x'+ eventNumberPlus[i])).style.backgroundColor = "rgb(148, 255, 203)";
+                    }
+                    else if(eventKind === 'minus'){
+                        eventNumberMinus.push( eventNumberRandom ); //乱数を発生させ、適当なマスにイベントを発生させる
+                        detour.push( Math.floor(Math.random() * 5) + 2 ); //戻るマス数を乱数で決める 
+                        eventParagraph[i + 6].innerText = detour[i] + 'マス戻る'
+                        eval('x'+ eventNumberMinus[i]).appendChild(eventParagraph[i + 6]); //決まったイベントを記述
+                        document.getElementById(String('x'+ eventNumberMinus[i])).style.backgroundColor = "rgb(255, 70, 77)";
+                    }
+                    else if(eventKind === 'change'){
+                        eventNumberChange.push( eventNumberRandom ); //乱数を発生させ、適当なマスにイベントを発生させる
+                        eventParagraph[i + 12].innerText = 'チェンジ';
+                        eval('x'+ eventNumberChange[i]).appendChild(eventParagraph[i + 12]); //決まったイベントを記述
+                        document.getElementById(String('x'+ eventNumberChange[i])).style.backgroundColor = "rgb(255, 255, 0)"
+                    };
+                };
+            };
+        };
+        eventMaking( 6, 43, 2, 'plus');
+        eventMaking( 6, 49, 8, 'minus');
+        eventMaking( 3, 40, 11, 'change');
         document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする
         document.getElementById('start-button').disabled = true; //リスタートをできないようにする
-    }
+    };
 
 
     saikoro.onclick = () =>{ //「サイコロを振る」が押されてから処理を少し遅らせる
@@ -337,77 +328,107 @@
                     paragraphB.innerText = 'A　B';
                 }else{
                     paragraphB.innerText = 'B'
-                }
-                eval(String('a'+ bTotal)).appendChild(paragraphB); //Bのいるマスの内容は「B」
+                };
+                eval('a'+ bTotal).appendChild(paragraphB); //Bのいるマスの内容は「B」
                 document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'pink'; //Bのいるマスはピンクになる
 
                 var eventCheckPlus = eventNumberPlus.indexOf( bTotal ); 
                 var eventCheckMinus = eventNumberMinus.indexOf( bTotal ); 
-                if( eventCheckPlus >= 0 || eventCheckMinus >= 0){ //Bの止まったマスに「〇マス進む」または「〇マス戻る」があった場合の処理
-                    var event = () => {
-                        removeAllChildren(NumberArea); //NumberAreaの表示を消す
-                        removeAllChildren(eval('a'+ bTotal));
-                        if(aTotal === bTotal){ //AとBが同じマスにいる場合
+                var eventCheckChange = eventNumberChange.indexOf( bTotal );
+                if( eventCheckPlus >= 0 || eventCheckMinus >= 0 || eventCheckChange >= 0){ //Bの止まったマスに「〇マス進む」または「〇マス戻る」または「チェンジ」があった場合の処理
+                    
+                var event = () => {
+                    removeAllChildren(NumberArea); //NumberAreaの表示を消す
+
+                    if(aTotal === bTotal){ //AとBが同じマスにいる場合
+                        if( eventCheckPlus >= 0 || eventCheckMinus >= 0){ //「〇マス進む」か「〇マス戻る」のとき
+                            removeAllChildren(eval('a'+ bTotal));
                             paragraphA.innerText = 'A';
                             eval('a'+ bTotal).appendChild(paragraphA);
                             document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'yellowgreen'; //Bの居なくなったマスは黄緑にする
-                        }else{ //AとBが違うマスにいる場合
+                        };
+                    }else{ //AとBが違うマスにいる場合
+                        if( eventCheckPlus >= 0 || eventCheckMinus >= 0){ //「〇マス進む」か「〇マス戻る」のとき
+                            removeAllChildren(eval('a'+ bTotal));
                             document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'white'; //Bの居なくなったマスは白くする
+                        }else if(eventCheckChange >= 0){ //「チェンジ」のとき
+                            removeAllChildren(eval('a'+ aTotal));
+                            removeAllChildren(eval('a'+ bTotal));
+                            document.getElementById(String('a'+ aTotal)).style.backgroundColor = 'pink'; //もともとAがいたマスはピンクにする
+                            document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'yellowgreen'; //もともとBがいたマスは黄緑にする
                         };
+                    };
 
-                        if( eventNumberPlus.indexOf( bTotal ) >= 0 ){ //「〇マス進む」のとき
-                            number.innerText = shortcut[eventCheckPlus] + 'マス進む'; //NumberAreaの表示を「〇マス進む」に変える
-                            bTotal = bTotal + shortcut[eventCheckPlus];
-                        }else if(eventNumberMinus.indexOf( bTotal ) >= 0){ //「〇マス戻る」のとき
-                            number.innerText = detour[eventCheckMinus] + 'マス戻る'; //NumberAreaの表示を「〇マス戻る」に変える
-                            bTotal = bTotal - detour[eventCheckMinus];
-                        };
-                        NumberArea.appendChild(number);
+                    if( eventCheckPlus >= 0 ){ //「〇マス進む」のとき
+                        number.innerText = shortcut[eventCheckPlus] + 'マス進む'; //NumberAreaの表示を「〇マス進む」に変える
+                        bTotal = bTotal + shortcut[eventCheckPlus];
 
-                        eventCheckAfterPlusB = eventNumberPlus.indexOf( bTotal ); // 移動先にイベントがあるか確認
+                    }else if( eventCheckMinus >= 0){ //「〇マス戻る」のとき
+                        number.innerText = detour[eventCheckMinus] + 'マス戻る'; //NumberAreaの表示を「〇マス戻る」に変える
+                        bTotal = bTotal - detour[eventCheckMinus];
+
+                    }else if( eventCheckChange >= 0){ //「チェンジ」のとき
+                        number.innerText = 'チェンジ' //NumberAreaの表示を「チェンジ」に変える
+                        var bBefore = bTotal;
+                        bTotal = aTotal;
+                        aTotal = bBefore;
+
+                        paragraphA.innerText = 'A';
+                        paragraphB.innerText = 'B';
+                        eval('a'+ aTotal).appendChild(paragraphA);
+                        eval('a'+ bTotal).appendChild(paragraphB);
+                    };
+                    NumberArea.appendChild(number);
+                    eventCheckAfterB();
+
+                    function eventCheckAfterB() { //移動先にイベントがある場合はマスの色を変える
+                        eventCheckAfterPlusB = eventNumberPlus.indexOf( bTotal );
                         eventCheckAfterMinusB = eventNumberMinus.indexOf( bTotal );
-                        if( eventCheckAfterPlusB >= 0){ //移動先にイベントがある場合はマスの色を変える
-                            document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlusB])).style.backgroundColor = "rgb(255, 230, 245)";
-                            document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlusB])).style.color = "rgb(0, 255, 0)";
-                        }else if( eventCheckAfterMinusB >= 0){
-                            document.getElementById(String('x'+ eventNumberMinus[eventCheckAfterMinusB])).style.backgroundColor = "rgb(255, 230, 245)";
-                            document.getElementById(String('x'+ eventNumberMinus[eventCheckAfterMinusB])).style.color = "rgb(0, 255, 0)";
+                        eventCheckAfterChangeB = eventNumberChange.indexOf( bTotal );
+                        if( eventCheckAfterPlusB >= 0 || eventCheckAfterMinusB >= 0 || eventCheckAfterChangeB >= 0 ){
+                            document.getElementById(String('x'+ bTotal)).style.backgroundColor = "rgb(255, 230, 245)";
+                            document.getElementById(String('x'+ bTotal)).style.color = "rgb(0, 255, 0)";
                         };
-    
+                    };
+
+                    if( eventCheckPlus >= 0 || eventCheckMinus >= 0 ){
                         if(aTotal === bTotal){
-                            removeAllChildren(eval('a'+bTotal))
+                            removeAllChildren(eval('a'+ bTotal))
                             paragraphB.innerText = 'A　B';
                         }else{
                             paragraphB.innerText = 'B';
                         };
+                    };
                         eval('a'+ bTotal).appendChild(paragraphB);
                         document.getElementById(String('a'+ bTotal)).style.backgroundColor = 'pink'; //Bが移動したあとのマスはピンクにする
-                    };
+                };
                     setTimeout(event, 500); //処理を少し遅らせる
                 };
-            
+
                 var turnChangeToA = () => {
                     turn = turn + 1; //ターンが順番になるようにするための処理
                     removeAllChildren(turnArea);
                     Turn.innerText = 'Aさんのターンです。' //Bのターン終了後Aのターンに変わる
                     turnArea.appendChild(Turn);
 
-                    if( eventNumberPlus.indexOf( bTotal ) >= 0 || eventNumberMinus.indexOf( bTotal ) >= 0){
-                        if( eventCheckAfterPlusB >= 0){ //マスの色をもとに戻す
+                    if( eventNumber.indexOf(bTotal) >= 0){ //マスの色をもとに戻す
+                        if( eventCheckAfterPlusB >= 0){
                             document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlusB])).style.backgroundColor = "rgb(148, 255, 203)";
                             document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlusB])).style.color = "black";
                         }else if( eventCheckAfterMinusB >= 0){
                             document.getElementById(String('x'+ eventNumberMinus[eventCheckAfterMinusB])).style.backgroundColor = "rgb(255, 70, 77)";
                             document.getElementById(String('x'+ eventNumberMinus[eventCheckAfterMinusB])).style.color = "black";
+                        }else if( eventCheckAfterChangeB >= 0){
+                            document.getElementById(String('x'+ eventNumberChange[eventCheckAfterChangeB])).style.backgroundColor = "rgb(255, 255, 0)";
+                            document.getElementById(String('x'+ eventNumberChange[eventCheckAfterChangeB])).style.color = "black";
                         };
                     };
 
-                    document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする 
+                    document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする
                     return;
                 };
-                setTimeout(turnChangeToA, 1000);
+                setTimeout(turnChangeToA, 1000); 
             };
-
         }
     }
 })();

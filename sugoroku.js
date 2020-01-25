@@ -50,9 +50,11 @@
         if(x > y){ //x > yの場合、Aが先攻
             turn = 1;
             Turn.innerText = 'Aさんのターンです。'
+            document.getElementById('n1').style.backgroundColor = 'yellowgreen';
         }else if(y > x){ //y > xの場合、Bが先攻
             turn = 2;
             Turn.innerText = 'Bさんのターンです。'
+            document.getElementById('n1').style.backgroundColor = 'pink';
         }
         turnArea.appendChild(Turn); //turnAreaにどちらのターンか表示する
 
@@ -321,9 +323,15 @@
             if(turn % 2 === 1){
                 aTotal = Total1;
                 bTotal = Total2
+                if(OneMoreCheck === 0){
+                    document.getElementById('n1').style.backgroundColor = 'pink';
+                };
             }else if(turn % 2 === 0){
                 bTotal = Total1;
-                aTotal = Total2        
+                aTotal = Total2
+                if(OneMoreCheck === 0){
+                    document.getElementById('n1').style.backgroundColor = 'yellowgreen';   
+                };     
             };
 
             if(OneMoreCheck === 0){

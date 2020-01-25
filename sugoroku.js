@@ -1,25 +1,33 @@
 (function(){
     'use strict';
     const startButton = document.getElementById('start-button');
-    const saikoro = document.getElementById('saikoro'); 
+    const saikoro = document.getElementById('saikoro');
     const NumberArea = document.getElementById('numberarea');
     const turnArea = document.getElementById('turnarea');
 
     var eventNumberPlus = []; //「〇マス進む」を発生させるマス
     var eventNumberMinus = []; //「〇マス戻る」を発生させるマス
     var eventNumberChange = []; //「チェンジ」を発生させるマス
+    var eventNumberTwice = []; //「×2」を発生させるマス
+    var eventNumberOneMore = []; //「もう一回」を発生させるマス
     var shortcut = []; //進むマス数
     var detour = []; //戻るマス数
     
     var eventCheckAfterPlus; //イベントの移動後に「〇マス進む」があるか確認する
     var eventCheckAfterMinus; //イベントの移動後に「〇マス戻る」があるか確認する
     var eventCheckAfterChange; //イベントの移動後に「チェンジ」があるか確認する
-
+    var eventCheckAfterOneMore; //イベントの移動後に「もう一回」があるか確認する
+  
     var aTotal = 1; //Aの位置
     var bTotal = 1; //Bの位置
     var turn; //A・Bのターン
+    var OneMoreCheck = 0;
+    var SkipCheck = 0;
 
-    var number = document.createElement('h1'); //NumberAreaの内容
+    var number = document.createElement('span'); //NumberAreaの内容
+    number.id = 'NumberArea'
+    const numberTwice = document.createElement('span');
+    numberTwice.id = 'NumberTwice'
     var Turn = document.createElement('h4'); //turnAreaの内容
     const paragraphSame = document.createElement('p'); //AとBが同じマスにいるときの内容
   
@@ -79,20 +87,40 @@
                         eventParagraph[i + 12].innerText = 'チェンジ';
                         eval('x'+ eventNumberChange[i]).appendChild(eventParagraph[i + 12]); //決まったイベントを記述
                         document.getElementById(String('x'+ eventNumberChange[i])).style.backgroundColor = "rgb(255, 255, 0)"
+                    }
+                    else if(eventKind === 'twice'){
+                        eventNumberTwice.push( eventNumberRandom );
+                        eventParagraph[i + 15].innerText = '×2';
+                        eval('x'+ eventNumberTwice[i]).appendChild(eventParagraph[i + 15]); //決まったイベントを記述
+                        document.getElementById(String('x'+ eventNumberTwice[i])).style.backgroundColor = "rgb(255, 175, 80)";
+                    }
+                    else if(eventKind === 'onemore'){
+                        eventNumberOneMore.push( eventNumberRandom );
+                        eventParagraph[i + 18].innerText = 'もう一回';
+                        eval('x'+ eventNumberOneMore[i]).appendChild(eventParagraph[i + 18]); //決まったイベントを記述
+                        document.getElementById(String('x'+ eventNumberOneMore[i])).style.backgroundColor = "rgb(215, 215, 0)";
                     };
                 };
             };
         };
         eventMaking( 6, 43, 2, 'plus');
         eventMaking( 6, 49, 8, 'minus');
-        eventMaking( 3, 45, 5, 'change');
+        eventMaking( 3, 45, 8, 'change');
+        eventMaking( 3, 40, 5, 'twice');
+        eventMaking( 5, 40, 5, 'onemore');     
+
         document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする
+        document.getElementById('saikoro').style.opacity = '1.0';
         document.getElementById('start-button').disabled = true; //リスタートをできないようにする
+        document.getElementById('start-button').style.backgroundColor = 'rgb(220, 225, 240)';
+        document.getElementById('start-button').style.opacity = '0.4'
     };
 
 
     saikoro.onclick = () =>{ //「サイコロを振る」が押されてから処理を少し遅らせる
         document.getElementById('saikoro').disabled = true; //サイコロを振れないようにする
+        document.getElementById('saikoro').style.opacity = '0.4';
+        OneMoreCheck = 0;
         if(turn % 2 === 1){
             var Total1 = aTotal;
             var Total2 = bTotal;
@@ -138,9 +166,18 @@
 
         removeAllChildren(NumberArea);
         var random = Math.floor(Math.random() * 6) + 1; //乱数で1~6までが出る
-        number.innerText = random;
-        Total1 = Total1 + random;
-        NumberArea.appendChild(number); //出た目はNumberAreaに表示する
+        var eventCheckTwice = eventNumberTwice.indexOf( Total1 );
+        if( eventCheckTwice >= 0){
+            Total1 = Total1 + ( random * 2 );
+            number.innerText = random;
+            numberTwice.innerText = ' ×2';
+            NumberArea.appendChild(number); //出た目はNumberAreaに表示する
+            NumberArea.appendChild(numberTwice);
+        }else{
+            Total1 = Total1 + random;
+            number.innerText = random;
+            NumberArea.appendChild(number); //出た目はNumberAreaに表示する
+        };
 
         if(Total1 >= 50){
             Total1 = 50;
@@ -179,10 +216,17 @@
             var eventCheckPlus = eventNumberPlus.indexOf( Total1 ); 
             var eventCheckMinus = eventNumberMinus.indexOf( Total1 ); 
             var eventCheckChange = eventNumberChange.indexOf( Total1 );
-            if( eventCheckPlus >= 0 || eventCheckMinus >= 0 || eventCheckChange >= 0){
+            var eventCheckOneMore = eventNumberOneMore.indexOf( Total1 );          
+            if( eventCheckPlus >= 0 || eventCheckMinus >= 0 || eventCheckChange >= 0 || eventCheckOneMore >= 0 ){
                     
                 var event = () => {
                     removeAllChildren(NumberArea); //NumberAreaの表示を消す
+                
+                    if(eventCheckOneMore >= 0){
+                        number.innerText = 'もう一回'
+                        NumberArea.appendChild(number);
+                        OneMoreCheck = 1;                  
+                    };
 
                     if(eventCheckChange >= 0 && Total1 !== Total2){ //「チェンジ」で、AとBが違うマスにいるとき
                         number.innerText = 'チェンジ' //NumberAreaの表示を「チェンジ」に変える
@@ -248,7 +292,8 @@
                     eventCheckAfterPlus = eventNumberPlus.indexOf( Total1 );
                     eventCheckAfterMinus = eventNumberMinus.indexOf( Total1 );
                     eventCheckAfterChange = eventNumberChange.indexOf( Total1 );
-                    if( eventCheckAfterPlus >= 0 || eventCheckAfterMinus >= 0 || eventCheckAfterChange >= 0 ){
+                    eventCheckAfterOneMore = eventNumberOneMore.indexOf( Total1 );
+                    if( eventCheckAfterPlus >= 0 || eventCheckAfterMinus >= 0 || eventCheckAfterChange >= 0 || eventCheckAfterOneMore >= 0 ){
                         document.getElementById(String('x'+ Total1)).style.backgroundColor = "rgb(255, 230, 245)";
                         document.getElementById(String('x'+ Total1)).style.color = "rgb(0, 255, 0)";
                     };
@@ -259,10 +304,6 @@
         };
 
         var turnChange = () => {
-            removeAllChildren(turnArea);
-            Turn.innerText = Text2 + 'さんのターンです。'
-            turnArea.appendChild(Turn);
-
             if( eventCheckAfterPlus >= 0){
                 document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlus])).style.backgroundColor = "rgb(148, 255, 203)";
                 document.getElementById(String('x'+ eventNumberPlus[eventCheckAfterPlus])).style.color = "black";
@@ -272,6 +313,9 @@
             }else if( eventCheckAfterChange >= 0){
                 document.getElementById(String('x'+ eventNumberChange[eventCheckAfterChange])).style.backgroundColor = "rgb(255, 255, 0)";
                 document.getElementById(String('x'+ eventNumberChange[eventCheckAfterChange])).style.color = "black";
+            }else if( eventCheckAfterOneMore >= 0){
+                document.getElementById(String('x'+ eventNumberOneMore[eventCheckAfterOneMore])).style.backgroundColor = "rgb(215, 215, 0)";
+                document.getElementById(String('x'+ eventNumberOneMore[eventCheckAfterOneMore])).style.color = "black";
             };
 
             if(turn % 2 === 1){
@@ -282,8 +326,15 @@
                 aTotal = Total2        
             };
 
-            turn = turn + 1; //ターンが順番になるようにするための処理
+            if(OneMoreCheck === 0){
+                removeAllChildren(turnArea);
+                Turn.innerText = Text2 + 'さんのターンです。'
+                turnArea.appendChild(Turn);
+                turn = turn + 1;
+            };
+
             document.getElementById('saikoro').disabled = false; //サイコロを振れるようにする
+            document.getElementById('saikoro').style.opacity = '1.0';
             return;
         };
         setTimeout(turnChange, 1000);

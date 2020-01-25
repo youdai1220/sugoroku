@@ -1,20 +1,25 @@
-body{
+body, #number, #game{
     text-align:center;
     margin:auto;
     font-family:'Century Gothic','游ゴシック';
+}
+body{
+    background-color:#FFFFCC;
     width:1250px;
 }
+#tableArea{
+    background-color:#DDFFFF;
+    position: sticky;
+    top: 0;
+}
 #number{
-    text-align:center;
-    margin:auto;
-    font-family:'Century Gothic','游ゴシック';
+    top: 0;
     width:500px;
     height:100px;
+    background-color:white;
 }
 #game{
-    text-align:center;
-    margin:auto;
-    font-family:'Century Gothic','游ゴシック';
+    background-color:white;
     width:1000px;
     height:500px;
 }
@@ -22,26 +27,37 @@ body{
     font-size:100%;
     font-family:'Century Gothic','游ゴシック';
     border-style:none;
+}
+#start-button{
     height:30px;
     width:200px;
+    background-color:pink;
 }
 #saikoro{
-    background-color:skyblue;
+    width:300px;
+    height:50px;
+    opacity:0.4;
 }
 #a1,#a2,#a3,#a4,#a5,#a6,#a7,#a8,#a9,#a10,#a11,#a12,#a13,#a14,#a15,#a16,#a17,#a18,#a19,#a20,#a21,#a22,#a23,#a24,#a25,#a26,#a27,#a28,#a29,#a30,#a31,#a32,#a33,#a34,#a35,#a36,#a37,#a38,#a39,#a40,#a41,#a42,#a43,#a44,#a45,#a45,#a46,#a47,#a48,#a49,#a50{
     width:100px;
     height:100px;
 }
-#n1,#n3,#saikoro{
+#n1,#n3{
     width:300px;
     height:50px
 }
 #l1,#l2,#l3,#l4,#l5{
     height:30px;
 }
-#a1{
+#a1, #saikoro{
     background-color:skyblue;
 }
 #a50{
     background-color:orange;
+}
+#NumberArea{
+    font-size:200%;
+}
+#NumberTwice{
+    font-size:150%
 }

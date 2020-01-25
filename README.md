@@ -1,5 +1,6 @@
 # sugoroku
 https://youdai1220.github.io/sugoroku/sugoroku.html
+
 2人ですごろくができるプログラムです。
 それぞれA,Bとして表示されます。
 

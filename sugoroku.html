@@ -11,7 +11,8 @@
     <h2>すごろく</h2>
     <br>普通の2人用すごろくです。「ゲームを始める」を押すと先攻・後攻とイベントを決定します。
     <input type="button" id="start-button" value="ゲームを始める">
-    <p><table id="number" rules="all" frame="border">
+    <p><section id="tableArea">
+        <br><table id="number" rules="all" frame="border">
         <tr>
             <td id="n1"><div id="turnarea"></div></td>
             <td rowspan="2"><div id="numberarea"></div></td>
@@ -19,7 +20,7 @@
         <tr>
             <td id="n3"><input type="button" id="saikoro" value="サイコロを振る" disabled="true"></td>
         </tr>
-    </table>
+    </table><br></section>
 
 
     <P><table id="game" rules="all" frame="border" border="3">

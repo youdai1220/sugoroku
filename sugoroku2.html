@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>双六</title>
+    <link rel="stylesheet" href="sugoroku.css">
+</head>
+<body>
+        〇マス進む・・・そのマスに止まると〇マス進みます。
+        〇マス戻る・・・そのマスに止まると〇マス戻ります。
+        チェンジ・・・そのマスに止まると、AとBの位置を交換し、次の人のターンになります。
+        もう一回・・・そのマスに止まると、もう一度サイコロを振り、進むことができます。
+        ×2・・・そのマスに止まった状態からターンがはじまった場合、サイコロの出た目の2倍進むことができます。
+
+    <h2>すごろく</h2>
+    <br>普通の2人用すごろくです。「ゲームを始める」を押すと先攻・後攻とイベントを決定します。
+    <input type="button" id="start-button" value="ゲームを始める">
+    <p><section id="tableArea"><br>   
+        <ul class="menu">
+                <li class="menu__multi">
+                    <a href="#" class="init-bottom">イベントマスの説明</a>
+                    <ul class="menu__second-level">
+                        <!-- 第一階層 -->
+                        <li>
+                            <a href="#" class="init-right">〇マス進む</a>
+                            <ul class="menu__third-level">
+                                <!-- 第二階層 -->
+                                <li id="setumei">
+                                    そのマスに止まると〇マス進みます。
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- 他メニュー省略 -->
+                    </ul>
+                </li>
+                <!-- 他グローバルナビメニュー省略 -->
+            </ul>
+        <table id="number" rules="all" frame="border">
+        <tr>
+            <td id="n1"><div id="turnarea"></div></td>
+            <td rowspan="2"><div id="numberarea"></div></td>
+        </tr>
+        <tr>
+            <td id="n3"><input type="button" id="saikoro" value="サイコロを振る" disabled="true"></td>
+        </tr>
+    </table><br>
+    </section>
+
+
+    <P><table id="game" rules="all" frame="border" border="3">
+        <tr id="l1">
+            <td id="x1">Start</td>
+            <td id="x2"></td>
+            <td id="x3"></td>
+            <td id="x4"></td>
+            <td id="x5"></td>
+            <td id="x6"></td>
+            <td id="x7"></td>
+            <td id="x8"></td>
+            <td id="x9"></td>
+            <td id="x10"></td>
+        </tr>
+        <tr id="m1"> 
+            <td id="a1"></td>
+            <td id="a2"></td>
+            <td id="a3"></td>
+            <td id="a4"></td>
+            <td id="a5"></td>
+            <td id="a6"></td>
+            <td id="a7"></td>
+            <td id="a8"></td>
+            <td id="a9"></td>
+            <td id="a10"></td>
+        </tr>
+        <tr id="l2">
+            <td id="x11"></td>
+            <td id="x12"></td>
+            <td id="x13"></td>
+            <td id="x14"></td>
+            <td id="x15"></td>
+            <td id="x16"></td>
+            <td id="x17"></td>
+            <td id="x18"></td>
+            <td id="x19"></td>
+            <td id="x20"></td>
+        </tr>
+        <tr id="m2">
+            <td id="a11"></td>
+            <td id="a12"></td>
+            <td id="a13"></td>
+            <td id="a14"></td>
+            <td id="a15"></td>
+            <td id="a16"></td>
+            <td id="a17"></td>
+            <td id="a18"></td>
+            <td id="a19"></td>
+            <td id="a20"></td>
+        </tr>
+        <tr id="l3">
+            <td id="x21"></td>
+            <td id="x22"></td>
+            <td id="x23"></td>
+            <td id="x24"></td>
+            <td id="x25"></td>
+            <td id="x26"></td>
+            <td id="x27"></td>
+            <td id="x28"></td>
+            <td id="x29"></td>
+            <td id="x30"></td>
+        </tr>
+        <tr id="m3">
+            <td id="a21"></td>
+            <td id="a22"></td>
+            <td id="a23"></td>
+            <td id="a24"></td>
+            <td id="a25"></td>
+            <td id="a26"></td>
+            <td id="a27"></td>
+            <td id="a28"></td>
+            <td id="a29"></td>
+            <td id="a30"></td>
+        </tr>
+        <tr id="l4">
+            <td id="x31"></td>
+            <td id="x32"></td>
+            <td id="x33"></td>
+            <td id="x34"></td>
+            <td id="x35"></td>
+            <td id="x36"></td>
+            <td id="x37"></td>
+            <td id="x38"></td>
+            <td id="x39"></td>
+            <td id="x40"></td>
+        </tr>
+        <tr id="m4">
+            <td id="a31"></td>
+            <td id="a32"></td>
+            <td id="a33"></td>
+            <td id="a34"></td>
+            <td id="a35"></td>
+            <td id="a36"></td>
+            <td id="a37"></td>
+            <td id="a38"></td>
+            <td id="a39"></td>
+            <td id="a40"></td>
+        </tr>
+        <tr id="l5">
+            <td id="x41"></td>
+            <td id="x42"></td>
+            <td id="x43"></td>
+            <td id="x44"></td>
+            <td id="x45"></td>
+            <td id="x46"></td>
+            <td id="x47"></td>
+            <td id="x48"></td>
+            <td id="x49"></td>
+            <td id="x50">Goal</td>
+        </tr>
+        <tr id="m5">
+            <td id="a41"></td>
+            <td id="a42"></td>
+            <td id="a43"></td>
+            <td id="a44"></td>
+            <td id="a45"></td>
+            <td id="a46"></td>
+            <td id="a47"></td>
+            <td id="a48"></td>
+            <td id="a49"></td>
+            <td id="a50">Goal</td>
+        </tr>
+    </table>
+    <div id = "result-area"></div>
+    <script src="sugoroku.js"></script>
+</body>
+</html>
